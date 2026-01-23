@@ -1,33 +1,89 @@
-<form id="feedbackForm">
-  <label>Case ID</label>
-  <input type="text" id="caseId" name="CaseID" readonly>
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Support Case Feedback</title>
+  <style>
+    body {
+      font-family: Calibri, Arial;
+      background-color: #f4f6f8;
+    }
+    .container {
+      width: 500px;
+      margin: 50px auto;
+      background: #ffffff;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0px 0px 8px rgba(0,0,0,0.1);
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    textarea {
+      resize: vertical;
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 10px;
+      background-color: #0078d4;
+      color: white;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h2>Support Case Feedback</h2>
 
-  <label>Email</label>
-  <input type="email" id="email" name="Email" readonly>
+  <form id="feedbackForm">
+    <label>Case ID</label>
+    <input type="text" id="caseId" name="CaseID" readonly>
 
-  <label>Rating</label>
-  <select id="rating" name="Rating" required>
-    <option value="">Select</option>
-    <option value="5">Excellent</option>
-    <option value="4">Good</option>
-    <option value="3">Average</option>
-    <option value="2">Poor</option>
-    <option value="1">Very Poor</option>
-  </select>
+    <label>Email</label>
+    <input type="email" id="email" name="Email" readonly>
 
-  <label>Comments</label>
-  <textarea id="comments" name="Comments" rows="4"></textarea>
+    <label>Rating</label>
+    <select id="rating" name="Rating" required>
+      <option value="">Select</option>
+      <option value="5">Excellent</option>
+      <option value="4">Good</option>
+      <option value="3">Average</option>
+      <option value="2">Poor</option>
+      <option value="1">Very Poor</option>
+    </select>
 
-  <button type="submit">Submit Feedback</button>
-</form>
+    <label>Comments</label>
+    <textarea id="comments" name="Comments" rows="4"></textarea>
+
+    <button type="submit">Submit Feedback</button>
+  </form>
+</div>
 
 <script>
-  // Prefill CaseID and Email
+  // Prefill CaseID and Email from URL parameters
   const params = new URLSearchParams(window.location.search);
   document.getElementById("caseId").value = params.get("caseId") || "";
   document.getElementById("email").value = params.get("email") || "";
 
-  // Handle form submit
+  // Handle form submission with JSON POST
   document.getElementById("feedbackForm").addEventListener("submit", function(e) {
     e.preventDefault(); // Prevent default form submission
 
@@ -48,7 +104,7 @@
         alert("Feedback submitted successfully!");
         document.getElementById("feedbackForm").reset();
       } else {
-        alert("Error submitting feedback.");
+        alert("Error submitting feedback. Please try again.");
       }
     })
     .catch(err => {
@@ -56,3 +112,5 @@
     });
   });
 </script>
+</body>
+</html>
