@@ -49,11 +49,13 @@
     }
   </style>
 </head>
+
 <body>
 <div class="container">
   <h2>Support Case Feedback</h2>
 
   <form id="feedbackForm">
+
     <label>Case ID</label>
     <input type="text" id="caseId" name="CaseID" readonly>
 
@@ -78,39 +80,55 @@
 </div>
 
 <script>
-  // Prefill CaseID and Email from URL parameters
+  // Read URL parameters
   const params = new URLSearchParams(window.location.search);
-  document.getElementById("caseId").value = params.get("caseId") || "";
-  document.getElementById("email").value = params.get("email") || "";
 
-  // Handle form submission with JSON POST
-  document.getElementById("feedbackForm").addEventListener("submit", function(e) {
-    e.preventDefault(); // Prevent default form submission
+  const caseId = params.get("caseId") || "";
+  const email  = params.get("email") || "";
+  const token  = params.get("token") || ""; // 🔒 hidden token
 
-    const data = {
-      CaseID: document.getElementById("caseId").value,
-      Email: document.getElementById("email").value,
+  // Prefill visible fields
+  document.getElementById("caseId").value = caseId;
+  document.getElementById("email").value  = email;
+
+  // Handle form submit
+  document.getElementById("feedbackForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (!token) {
+      alert("Invalid or expired feedback link.");
+      return;
+    }
+
+    const payload = {
+      CaseID: caseId,
+      Email: email,
+      Token: token,     // 🔒 sent only for validation
       Rating: document.getElementById("rating").value,
       Comments: document.getElementById("comments").value
     };
 
-    fetch("https://default77d7ea75a14b4585a772c130b2a7e4.f9.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/a00df0d9d2b74317994df905ebf21c32/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jp611_j7y3xOrNpogdoROY2leNRFBMTESE6HAsF2Tjk", {
+    fetch("https://default77d7ea75a14b4585a772c130b2a7e4.f9.environment.api.powerplatform.com/powerautomate/automations/direct/workflows/a00df0d9d2b74317994df905ebf21c32/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=jp611_j7y3xOrNpogdoROY2leNRFBMTESE6HAsF2Tjk", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(payload)
     })
-    .then(response => {
-      if(response.ok) {
-        alert("Feedback submitted successfully!");
+    .then(res => {
+      if (res.ok) {
+        alert("Thank you! Your feedback has been submitted.");
         document.getElementById("feedbackForm").reset();
       } else {
-        alert("Error submitting feedback. Please try again.");
+        alert("This feedback link is invalid or already used.");
       }
     })
     .catch(err => {
-      alert("Error: " + err);
+      alert("Error submitting feedback.");
+      console.error(err);
     });
   });
 </script>
+
 </body>
 </html>
